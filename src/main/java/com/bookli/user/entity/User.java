@@ -1,5 +1,6 @@
 package com.bookli.user.entity;
 
+import com.bookli.common.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,9 +25,5 @@ public class User {
   private String name;
 
   @Enumerated(EnumType.STRING)
-  private Role role;
-
-  public enum Role {
-    USER, ADMIN
-  }
+  private UserRole role;
 }
