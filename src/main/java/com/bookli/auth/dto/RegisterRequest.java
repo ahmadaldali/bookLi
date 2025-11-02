@@ -15,10 +15,10 @@ public class RegisterRequest {
   private String name;
 
   @NotBlank(message = "{error.email.required}")
-  @Email(message = "Email should be valid")
+  @Email(message = "{error.email.invalid}")
   private String email;
 
   @NotBlank(message = "{error.password.required}")
-  @Size(min = 6, max = 50, message = "Password must be between 6 and 50 characters")
+  @Size(min = 6, max = 50, message = "{error.password.length_6_50}")
   private String password;
 }

@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -49,12 +49,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
   }
 
-  @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<Map<String, String>> handleException(HttpMessageNotReadableException ex) {
-    Map<String, String> errors = new HashMap<>();
-    errors.put("error", ex.getMessage());
+  @ExceptionHandler(AppException.class)
+  public ResponseEntity<Map<String, String>> handleAppException(AppException ex) {
+    Map<String, String> error = new HashMap<>();
+    String message = messageSource.getMessage(ex.getCode(), null, Locale.getDefault());
+    error.put("error", message);
 
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 
   @ExceptionHandler(Exception.class)
