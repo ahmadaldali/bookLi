@@ -8,6 +8,8 @@ import com.bookli.common.enums.BookingStatus;
 import com.bookli.common.exception.AppException;
 import com.bookli.user.entity.User;
 import com.bookli.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingService {
 
+  @PersistenceContext
+  private EntityManager entityManager;
   private final UserRepository userRepository;
   private final BookingRepository bookingRepository;
 
@@ -26,13 +30,10 @@ public class BookingService {
   public BookingResponse createBooking(Long providerId,
                                LocalDateTime start, LocalDateTime end) {
 
-    User provider = userRepository.findById(providerId)
-      .orElseThrow(() -> new AppException("error.provider.notfound"));
-
     validateBookingTimes(start, end);
 
     boolean hasOverlap = bookingRepository.existsOverlappingBooking(
-      provider.getId(),
+      providerId,
       start,
       end,
       ACTIVE_STATUSES
@@ -43,7 +44,7 @@ public class BookingService {
     }
 
     Booking booking = Booking.builder()
-      .provider(provider)
+      .provider(entityManager.getReference(User.class, providerId))
       .startTime(start)
       .endTime(end)
       .status(BookingStatus.BOOKED)

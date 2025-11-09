@@ -1,6 +1,7 @@
 package com.bookli.booking.dto.request;
 
 
+import com.bookli.common.validator.provider.ExistingProviderId;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class CreateBookingRequest {
   @NotNull(message = "End time is required")
   private LocalDateTime endTime;
 
-  @NotNull(message = "Provider ID is required")
+  @ExistingProviderId(message = "{error.provider.notfound}")
+  @NotNull(message = "{error.provider.required}")
   private Long providerId;
 }

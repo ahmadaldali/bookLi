@@ -17,8 +17,6 @@ public class ExistingProviderIdValidator implements ConstraintValidator<Existing
   public boolean isValid(Long providerId, ConstraintValidatorContext context) {
     if (providerId == null) return false;
 
-    return userRepository.findById(providerId)
-      .map(user -> user.getRole() == UserRole.PROVIDER)
-      .orElse(false);
+    return userRepository.findById(providerId).isPresent();
   }
 }
