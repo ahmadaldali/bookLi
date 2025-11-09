@@ -19,28 +19,34 @@ public class AuthService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
 
-  public AuthResponse register(RegisterRequest request) {
+  public AuthResponse register(String email, String name, String password) {
+    if (userRepository.existsByEmail(email)) {
+      throw new AppException("error.email.exist");
+    }
+
     User user = User.builder()
-      .name(request.getName())
-      .email(request.getEmail())
-      .password(passwordEncoder.encode(request.getPassword()))
+      .name(name)
+      .email(email)
+      .password(passwordEncoder.encode(password))
       .role(UserRole.USER)
       .build();
     userRepository.save(user);
 
     String token = jwtService.generateToken(user.getEmail());
+
     return new AuthResponse(token);
   }
 
-  public AuthResponse login(LoginRequest request) {
-    User user = userRepository.findByEmail(request.getEmail())
+  public AuthResponse login(String email, String password) {
+    User user = userRepository.findByEmail(email)
       .orElseThrow(() -> new AppException("error.login.user_notfound"));
 
-    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+    if (!passwordEncoder.matches(password, user.getPassword())) {
       throw new AppException("error.login.invalid_credentials");
     }
 
     String token = jwtService.generateToken(user.getEmail());
+
     return new AuthResponse(token);
   }
 }
