@@ -6,13 +6,10 @@ import com.bookli.booking.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/booking")
+@RequestMapping("/bookings")
 @RequiredArgsConstructor
 public class BookingController {
 
@@ -20,6 +17,11 @@ public class BookingController {
 
   @PostMapping("")
   public ResponseEntity<BookingResponse> create(@Valid @RequestBody CreateBookingRequest request) {
-    return ResponseEntity.ok(bookingService.CreateBooking(request));
+    return ResponseEntity.ok(bookingService.createBooking(request.getProviderId(), request.getStartTime(), request.getEndTime()));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<BookingResponse> get(@PathVariable Long id) {
+    return ResponseEntity.ok(bookingService.getBooking(id));
   }
 }

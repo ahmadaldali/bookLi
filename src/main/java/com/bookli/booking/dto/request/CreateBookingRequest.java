@@ -22,7 +22,6 @@ public class CreateBookingRequest {
   @NotNull(message = "End time is required")
   private LocalDateTime endTime;
 
-  // @ExistingProviderId
   @NotNull(message = "Provider ID is required")
   private Long providerId;
 }
