@@ -1,6 +1,6 @@
 package com.bookli.auth.service;
 
-import com.bookli.auth.dto.*;
+import com.bookli.auth.dto.AuthResponse;
 import com.bookli.auth.jwt.JwtService;
 import com.bookli.common.enums.UserRole;
 import com.bookli.common.exception.AppException;
