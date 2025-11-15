@@ -3,7 +3,7 @@ package com.bookli.auth.service;
 import com.bookli.auth.dto.AuthResponse;
 import com.bookli.auth.jwt.JwtService;
 import com.bookli.common.enums.UserRole;
-import com.bookli.common.exception.AppException;
+import com.bookli.common.exception.ValidationException;
 import com.bookli.user.entity.User;
 import com.bookli.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class AuthService {
 
   public AuthResponse register(String email, String name, String password) {
     if (userRepository.existsByEmail(email)) {
-      throw new AppException("error.email.exist");
+      throw new ValidationException("error.email.exist");
     }
 
     User user = User.builder()
@@ -30,20 +30,20 @@ public class AuthService {
       .build();
     userRepository.save(user);
 
-    String token = jwtService.generateToken(user.getEmail());
+    String token = jwtService.generateToken(user.getEmail(), user.getId());
 
     return new AuthResponse(token);
   }
 
   public AuthResponse login(String email, String password) {
     User user = userRepository.findByEmail(email)
-      .orElseThrow(() -> new AppException("error.login.user_notfound"));
+      .orElseThrow(() -> new ValidationException("error.login.user_notfound"));
 
     if (!passwordEncoder.matches(password, user.getPassword())) {
-      throw new AppException("error.login.invalid_credentials");
+      throw new ValidationException("error.login.invalid_credentials");
     }
 
-    String token = jwtService.generateToken(user.getEmail());
+    String token = jwtService.generateToken(user.getEmail(), user.getId());
 
     return new AuthResponse(token);
   }

@@ -49,13 +49,18 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
   }
 
-  @ExceptionHandler(AppException.class)
-  public ResponseEntity<Map<String, String>> handleAppException(AppException ex) {
+  @ExceptionHandler(ValidationException.class)
+  public ResponseEntity<Map<String, String>> handleValidationException(ValidationException ex) {
     Map<String, String> error = new HashMap<>();
     String message = messageSource.getMessage(ex.getCode(), null, Locale.getDefault());
     error.put("error", message);
 
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
+  }
+
+  @ExceptionHandler(UnAuthorizedException.class)
+  public ResponseEntity<Map<String, String>> handleUnauthorizedException(UnAuthorizedException ex) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashMap<>());
   }
 
   @ExceptionHandler(Exception.class)

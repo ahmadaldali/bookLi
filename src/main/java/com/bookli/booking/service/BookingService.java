@@ -6,7 +6,8 @@ import com.bookli.booking.entity.Booking;
 import com.bookli.booking.repository.BookingRepository;
 import com.bookli.common.dto.SuccessResponse;
 import com.bookli.common.enums.BookingStatus;
-import com.bookli.common.exception.AppException;
+import com.bookli.common.exception.UnAuthorizedException;
+import com.bookli.common.exception.ValidationException;
 import com.bookli.user.entity.User;
 import com.bookli.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +30,9 @@ public class BookingService {
   private static final List<BookingStatus> ACTIVE_STATUSES = List.of(BookingStatus.PENDING, BookingStatus.BOOKED);
 
   public BookingResponse createBooking(Long providerId,
-                               LocalDateTime start, LocalDateTime end) {
+                               LocalDateTime start, LocalDateTime end, Long userId) {
 
+    validateProvider(userId, providerId);
     validateBookingTimes(start, end);
 
     boolean hasOverlap = bookingRepository.existsOverlappingBooking(
@@ -42,7 +43,7 @@ public class BookingService {
     );
 
     if (hasOverlap) {
-      throw new AppException("error.booking.slot_overlapping");
+      throw new ValidationException("error.booking.slot_overlapping");
     }
 
     Booking booking = Booking.builder()
@@ -59,14 +60,14 @@ public class BookingService {
 
   public BookingResponse getBooking(Long id) {
     Booking booking = bookingRepository.findById(id)
-      .orElseThrow(() -> new AppException("error.booking.notfound"));
+      .orElseThrow(() -> new ValidationException("error.booking.notfound"));
 
     return new BookingResponse(booking.getId(), booking.getStatus());
   }
 
   public SuccessResponse deleteBooking(Long id, Long userId) {
     Booking booking = bookingRepository.findByIdAndProviderId(id, userId)
-      .orElseThrow(() -> new AppException("error.booking.notfound"));
+      .orElseThrow(() -> new ValidationException("error.booking.notfound"));
     bookingRepository.delete(booking);
 
     return new SuccessResponse("Booking deleted Successfully");
@@ -76,14 +77,23 @@ public class BookingService {
   // ---------------- Helper Methods ----------------
 
   /**
+   * Validates that you can't book for another user (for now only limited for yourself only)
+   */
+  private void  validateProvider(Long userId, Long providerId) {
+    if (!userId.equals(providerId)) {
+      throw new UnAuthorizedException();
+    }
+  }
+
+  /**
    * Validates that the booking start time is before end time
    */
   private void validateBookingTimes(LocalDateTime start, LocalDateTime end) {
     if (start == null || end == null) {
-      throw new IllegalArgumentException("Start time and end time must not be null.");
+      throw new ValidationException("error.booking.times_required");
     }
     if (!start.isBefore(end)) {
-      throw new AppException("error.booking.times_overlapping");
+      throw new ValidationException("error.booking.times_overlapping");
     }
   }
 
