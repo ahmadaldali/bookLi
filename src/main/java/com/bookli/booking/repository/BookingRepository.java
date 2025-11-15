@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -24,4 +25,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Param("end") LocalDateTime end,
     @Param("statuses") java.util.List<com.bookli.common.enums.BookingStatus> statuses
   );
+
+  Optional<Booking> findByIdAndProviderId(Long id, Long providerId);
+
 }

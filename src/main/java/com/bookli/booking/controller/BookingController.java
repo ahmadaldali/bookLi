@@ -3,6 +3,7 @@ package com.bookli.booking.controller;
 import com.bookli.booking.dto.request.CreateBookingRequest;
 import com.bookli.booking.dto.response.BookingResponse;
 import com.bookli.booking.service.BookingService;
+import com.bookli.common.dto.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +24,10 @@ public class BookingController {
   @GetMapping("/{id}")
   public ResponseEntity<BookingResponse> get(@PathVariable Long id) {
     return ResponseEntity.ok(bookingService.getBooking(id));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<SuccessResponse> delete(@PathVariable Long id) {
+    return ResponseEntity.ok(bookingService.deleteBooking(id,9L));
   }
 }

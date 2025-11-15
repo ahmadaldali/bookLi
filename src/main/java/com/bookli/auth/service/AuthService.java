@@ -7,7 +7,6 @@ import com.bookli.common.exception.AppException;
 import com.bookli.user.entity.User;
 import com.bookli.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,6 @@ public class AuthService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
-  private final AuthenticationManager authenticationManager;
 
   public AuthResponse register(String email, String name, String password) {
     if (userRepository.existsByEmail(email)) {

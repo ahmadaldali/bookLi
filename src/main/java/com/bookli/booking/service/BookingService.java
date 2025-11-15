@@ -4,6 +4,7 @@ import com.bookli.booking.dto.response.BookingResponse;
 import com.bookli.booking.entity.Booking;
 
 import com.bookli.booking.repository.BookingRepository;
+import com.bookli.common.dto.SuccessResponse;
 import com.bookli.common.enums.BookingStatus;
 import com.bookli.common.exception.AppException;
 import com.bookli.user.entity.User;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +63,15 @@ public class BookingService {
 
     return new BookingResponse(booking.getId(), booking.getStatus());
   }
+
+  public SuccessResponse deleteBooking(Long id, Long userId) {
+    Booking booking = bookingRepository.findByIdAndProviderId(id, userId)
+      .orElseThrow(() -> new AppException("error.booking.notfound"));
+    bookingRepository.delete(booking);
+
+    return new SuccessResponse("Booking deleted Successfully");
+  }
+
 
   // ---------------- Helper Methods ----------------
 
