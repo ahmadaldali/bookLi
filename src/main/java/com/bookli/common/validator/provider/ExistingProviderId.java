@@ -1,4 +1,4 @@
-package com.bookli.booking.dto.request;
+package com.bookli.common.validator.provider;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = ExistingProviderIdValidator.class)
 @Documented
 public @interface ExistingProviderId {
-  String message() default "Provider ID does not exist or is not a provider";
+  String message() default "{error.provider.notfound}";
   Class<?>[] groups() default {};
   Class<? extends Payload>[] payload() default {};
 }

@@ -15,11 +15,12 @@ public class JwtService {
     return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
   }
 
-  public String generateToken(String email) {
+  public String generateToken(String email, Long userId) {
     return Jwts.builder()
-      .subject(email)
-      .issuedAt(new Date())
-      .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
+      .setSubject(email)
+      .claim("userId", userId)
+      .setIssuedAt(new Date())
+      .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
       .signWith(getSigningKey())
       .compact();
   }
@@ -47,4 +48,23 @@ public class JwtService {
       .parseSignedClaims(token)
       .getPayload().getExpiration();
   }
+
+  public Long extractUserId(String token) {
+    Claims claims = Jwts.parser()
+      .setSigningKey(getSigningKey())
+      .build()
+      .parseClaimsJws(token)
+      .getBody();
+
+    Object userIdObj = claims.get("userId");
+    // userId might be stored as Integer or Long depending on serialization, so handle accordingly
+    if (userIdObj instanceof Integer) {
+      return ((Integer) userIdObj).longValue();
+    } else if (userIdObj instanceof Long) {
+      return (Long) userIdObj;
+    } else {
+      throw new IllegalArgumentException("Invalid userId claim type");
+    }
+  }
+
 }
