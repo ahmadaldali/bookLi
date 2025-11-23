@@ -1,5 +1,6 @@
 package com.bookli.common.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -49,13 +51,28 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
   }
 
-  @ExceptionHandler(AppException.class)
-  public ResponseEntity<Map<String, String>> handleAppException(AppException ex) {
+  @ExceptionHandler(ValidationException.class)
+  public ResponseEntity<Map<String, String>> handleValidationException(ValidationException ex) {
     Map<String, String> error = new HashMap<>();
     String message = messageSource.getMessage(ex.getCode(), null, Locale.getDefault());
     error.put("error", message);
 
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
+  }
+
+  @ExceptionHandler(UnAuthorizedException.class)
+  public ResponseEntity<Map<String, String>> handleUnauthorizedException(UnAuthorizedException ex) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashMap<>());
+  }
+
+  @ExceptionHandler(EntityNotFoundException.class)
+  public ResponseEntity<Map<String, String>> handleNotFoundException(EntityNotFoundException ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HashMap<>());
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  public ResponseEntity<Map<String, String>> handleNotFoundException(NoResourceFoundException ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HashMap<>());
   }
 
   @ExceptionHandler(Exception.class)
