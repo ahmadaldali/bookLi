@@ -4,6 +4,8 @@ bookLi is a booking tool backend built with Java and the Spring Boot framework. 
 ## Features
 
 -   **User Authentication**: Secure endpoints for user registration and login.
+-   **Booking**: Create, and delete bookings.
+-   **User**: Get the availability of a user.
 
 ## Technologies Used
 
@@ -57,7 +59,8 @@ Follow these instructions to get a copy of the project up and running on your lo
 ## Project Structure
 
 -   `src/main/java/com/bookli/auth`: Contains all authentication-related classes, including controllers, DTOs, JWT service, and authentication service.
+-   `src/main/java/com/bookli/booking`: Contains all booking-related classes, including controllers, entities, DTOs, repositories and services.
+-   `src/main/java/com/bookli/user`: Contains all user-related classes, including controllers, entities, DTOs, repositories and services.
 -   `src/main/java/com/bookli/config`: Houses Spring configuration files, such as `SecurityConfig` for web security.
--   `src/main/java/com/bookli/user`: Includes the `User` entity and the `UserRepository` interface for database interactions.
 -   `src/main/java/com/bookli/common`: Contains shared code, such as enums and the `GlobalExceptionHandler`.
 -   `src/main/resources`: Contains configuration files (`application.properties`) and static resources like custom error messages (`errors.properties`).
