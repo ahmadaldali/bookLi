@@ -2,6 +2,8 @@ package com.bookli.booking.entity;
 
 import com.bookli.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.time.LocalTime;
 
 @Entity
@@ -13,12 +15,15 @@ public class AvailabilityRule {
   private Long id;
 
   // 0=Sunday ... 6=Saturday
+  @Getter
   @Column(name = "day_of_week", nullable = false)
   private Integer dayOfWeek;
 
+  @Getter
   @Column(name = "start_time", nullable = false)
   private LocalTime startTime;
 
+  @Getter
   @Column(name = "end_time", nullable = false)
   private LocalTime endTime;
 

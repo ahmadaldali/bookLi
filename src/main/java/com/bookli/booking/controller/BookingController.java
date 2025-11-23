@@ -23,8 +23,8 @@ public class BookingController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<BookingResponse> get(@PathVariable Long id) {
-    return ResponseEntity.ok(bookingService.getBooking(id));
+  public ResponseEntity<BookingResponse> get(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    return ResponseEntity.ok(bookingService.getBooking(id, userDetails.getUserId()));
   }
 
   @DeleteMapping("/{id}")

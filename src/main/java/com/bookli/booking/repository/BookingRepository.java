@@ -6,11 +6,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-
   @Query("""
     SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END
     FROM Booking b
@@ -28,4 +28,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
   Optional<Booking> findByIdAndProviderId(Long id, Long providerId);
 
+  List<Booking> findByProviderIdAndStartTimeBetweenOrEndTimeBetween(Long providerId, LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2);
 }
